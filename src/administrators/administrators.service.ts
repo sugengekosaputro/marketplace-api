@@ -7,7 +7,6 @@ import { UpdateAdministratorDto } from './dto/update-administrator.dto';
 import { AdministratorRepository } from './infrastructure/persistence/administrator.repository';
 import { IPaginationOptions } from '../utils/types/pagination-options';
 import { Administrator } from './domain/administrator';
-import { AdministratorRole } from './infrastructure/persistence/relational/entities/administrator.entity';
 
 @Injectable()
 export class AdministratorsService {
@@ -16,17 +15,12 @@ export class AdministratorsService {
     private readonly administratorRepository: AdministratorRepository,
   ) {}
 
-  async create(
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    createAdministratorDto: CreateAdministratorDto,
-  ) {
-    // Do not remove comment below.
-    // <creating-property />
-
+  async create(createAdministratorDto: CreateAdministratorDto) {
     return this.administratorRepository.create({
-      full_name: '',
-      email: '',
-      role: AdministratorRole.SUPERADMIN,
+      full_name: createAdministratorDto.full_name,
+      email: createAdministratorDto.email,
+      password_hash: createAdministratorDto.password,
+      role: createAdministratorDto.role,
     });
   }
 
@@ -53,15 +47,14 @@ export class AdministratorsService {
 
   async update(
     id: Administrator['id'],
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
     updateAdministratorDto: UpdateAdministratorDto,
   ) {
-    // Do not remove comment below.
-    // <updating-property />
-
     return this.administratorRepository.update(id, {
-      // Do not remove comment below.
-      // <updating-property-payload />
+      full_name: updateAdministratorDto.full_name,
+      email: updateAdministratorDto.email,
+      password_hash: updateAdministratorDto.password,
+      role: updateAdministratorDto.role,
     });
   }
 

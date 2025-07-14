@@ -37,6 +37,13 @@ export class Administrator {
   email: string;
 
   @ApiProperty({
+    type: String,
+    example: '1234567890',
+    description: 'Password of the administrator',
+  })
+  password_hash: string;
+
+  @ApiProperty({
     enum: AdministratorRole,
     example: AdministratorRole.SUPERADMIN,
     description: 'Role of the administrator',

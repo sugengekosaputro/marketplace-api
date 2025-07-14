@@ -6,21 +6,18 @@ import {
   Patch,
   Param,
   Delete,
-  UseGuards,
   Query,
 } from '@nestjs/common';
 import { AdministratorsService } from './administrators.service';
 import { CreateAdministratorDto } from './dto/create-administrator.dto';
 import { UpdateAdministratorDto } from './dto/update-administrator.dto';
 import {
-  ApiBearerAuth,
   ApiCreatedResponse,
   ApiOkResponse,
   ApiParam,
   ApiTags,
 } from '@nestjs/swagger';
 import { Administrator } from './domain/administrator';
-import { AuthGuard } from '@nestjs/passport';
 import {
   InfinityPaginationResponse,
   InfinityPaginationResponseDto,
@@ -29,8 +26,8 @@ import { infinityPagination } from '../utils/infinity-pagination';
 import { FindAllAdministratorsDto } from './dto/find-all-administrators.dto';
 
 @ApiTags('Administrators')
-@ApiBearerAuth()
-@UseGuards(AuthGuard('jwt'))
+// @ApiBearerAuth()
+// @UseGuards(AuthGuard('jwt'))
 @Controller({
   path: 'administrators',
   version: '1',
