@@ -39,6 +39,7 @@ export class OrdersRelationalRepository implements OrdersRepository {
   async findById(id: Orders['id']): Promise<NullableType<Orders>> {
     const entity = await this.ordersRepository.findOne({
       where: { id },
+      relations: ['customer', 'commodities', 'commodities.type', 'history'],
     });
 
     return entity ? OrdersMapper.toDomain(entity) : null;
@@ -74,6 +75,6 @@ export class OrdersRelationalRepository implements OrdersRepository {
   }
 
   async remove(id: Orders['id']): Promise<void> {
-    await this.ordersRepository.delete(id);
+    await this.ordersRepository.softDelete(id);
   }
 }

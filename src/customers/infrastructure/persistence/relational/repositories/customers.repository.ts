@@ -79,4 +79,16 @@ export class CustomersRelationalRepository implements CustomersRepository {
   async remove(id: Customers['id']): Promise<void> {
     await this.customersRepository.delete(id);
   }
+
+  async findByEmail(
+    email: Customers['email'],
+  ): Promise<NullableType<Customers>> {
+    if (!email) return null;
+
+    const entity = await this.customersRepository.findOne({
+      where: { email },
+    });
+
+    return entity ? CustomersMapper.toDomain(entity) : null;
+  }
 }

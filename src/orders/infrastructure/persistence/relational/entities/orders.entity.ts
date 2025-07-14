@@ -46,6 +46,7 @@ export class OrdersEntity extends EntityRelationalHelper {
   @Column({
     type: 'enum',
     enum: OrderStatus,
+    enumName: 'order_status', // ✅ Shared name across both entities
     default: OrderStatus.PENDING_VERIFICATION,
   })
   status: OrderStatus;

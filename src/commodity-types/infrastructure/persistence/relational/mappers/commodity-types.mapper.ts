@@ -1,15 +1,23 @@
+import { CommoditiesMapper } from 'src/commodities/infrastructure/persistence/relational/mappers/commodities.mapper';
 import { CommodityTypes } from '../../../../domain/commodity-types';
 import { CommodityTypesEntity } from '../entities/commodity-types.entity';
 
 export class CommodityTypesMapper {
   static toDomain(raw: CommodityTypesEntity): CommodityTypes {
     const domainEntity = new CommodityTypes();
+    console.log(raw);
     domainEntity.id = raw.id;
     domainEntity.createdAt = raw.createdAt;
     domainEntity.updatedAt = raw.updatedAt;
     domainEntity.deletedAt = raw.deletedAt;
     domainEntity.name = raw.name;
 
+    // ✅ Map related commodities if available
+    if (raw.commodities?.length) {
+      domainEntity.commodities = raw.commodities.map((c) =>
+        CommoditiesMapper.toDomain(c),
+      );
+    }
     return domainEntity;
   }
 

@@ -7,6 +7,8 @@ import { UpdateOrderHistoriesDto } from './dto/update-order-histories.dto';
 import { OrderHistoriesRepository } from './infrastructure/persistence/order-histories.repository';
 import { IPaginationOptions } from '../utils/types/pagination-options';
 import { OrderHistories } from './domain/order-histories';
+import { Orders } from 'src/orders/domain/orders';
+import { OrderHistoryStatus } from './infrastructure/persistence/relational/entities/order-histories.entity';
 
 @Injectable()
 export class OrderHistoriesService {
@@ -23,8 +25,8 @@ export class OrderHistoriesService {
     // <creating-property />
 
     return this.orderHistoriesRepository.create({
-      // Do not remove comment below.
-      // <creating-property-payload />
+      status: OrderHistoryStatus.PENDING_VERIFICATION,
+      order: new Orders(),
     });
   }
 

@@ -24,4 +24,8 @@ export abstract class CustomersRepository {
   ): Promise<Customers | null>;
 
   abstract remove(id: Customers['id']): Promise<void>;
+
+  abstract findByEmail(
+    email: Customers['email'],
+  ): Promise<NullableType<Customers>>;
 }

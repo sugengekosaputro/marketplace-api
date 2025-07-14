@@ -33,6 +33,7 @@ export class CommodityTypesRelationalRepository
     const entities = await this.commodityTypesRepository.find({
       skip: (paginationOptions.page - 1) * paginationOptions.limit,
       take: paginationOptions.limit,
+      relations: ['commodities'],
     });
 
     return entities.map((entity) => CommodityTypesMapper.toDomain(entity));

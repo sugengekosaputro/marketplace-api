@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Commodities } from 'src/commodities/domain/commodities';
 
 export class CommodityTypes {
   @ApiProperty({
@@ -15,12 +16,12 @@ export class CommodityTypes {
   })
   name: string;
 
-  // @ApiProperty({
-  //   type: () => [Commodities],
-  //   description: 'List of commodities belonging to this type',
-  //   required: false,
-  // })
-  // commodities: Commodities[];
+  @ApiProperty({
+    type: () => [Commodities],
+    description: 'List of commodities belonging to this type',
+    required: false,
+  })
+  commodities?: Commodities[];
 
   @ApiProperty({
     type: Date,

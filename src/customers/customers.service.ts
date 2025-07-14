@@ -7,6 +7,7 @@ import { UpdateCustomersDto } from './dto/update-customers.dto';
 import { CustomersRepository } from './infrastructure/persistence/customers.repository';
 import { IPaginationOptions } from '../utils/types/pagination-options';
 import { Customers } from './domain/customers';
+import { NullableType } from '../utils/types/nullable.type';
 
 @Injectable()
 export class CustomersService {
@@ -15,16 +16,14 @@ export class CustomersService {
     private readonly customersRepository: CustomersRepository,
   ) {}
 
-  async create(
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    createCustomersDto: CreateCustomersDto,
-  ) {
+  async create(createCustomersDto: CreateCustomersDto) {
     // Do not remove comment below.
     // <creating-property />
 
     return this.customersRepository.create({
-      // Do not remove comment below.
-      // <creating-property-payload />
+      full_name: createCustomersDto.full_name,
+      phone: createCustomersDto.phone,
+      email: createCustomersDto.email,
     });
   }
 
@@ -65,5 +64,9 @@ export class CustomersService {
 
   remove(id: Customers['id']) {
     return this.customersRepository.remove(id);
+  }
+
+  findByEmail(email: Customers['email']): Promise<NullableType<Customers>> {
+    return this.customersRepository.findByEmail(email);
   }
 }
