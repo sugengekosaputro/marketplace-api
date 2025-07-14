@@ -10,6 +10,7 @@ export class <%= name %>Mapper {
     domainEntity.id = raw.id;
     domainEntity.createdAt = raw.createdAt;
     domainEntity.updatedAt = raw.updatedAt;
+    domainEntity.deletedAt = raw.deletedAt;
 
     return domainEntity;
   }
@@ -21,6 +22,7 @@ export class <%= name %>Mapper {
     }
     persistenceEntity.createdAt = domainEntity.createdAt;
     persistenceEntity.updatedAt = domainEntity.updatedAt;
+    persistenceEntity.deletedAt = domainEntity.deletedAt;
 
     return persistenceEntity;
   }

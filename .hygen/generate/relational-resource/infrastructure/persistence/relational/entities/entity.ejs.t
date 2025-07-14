@@ -21,4 +21,7 @@ export class <%= name %>Entity extends EntityRelationalHelper {
 
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @DeleteDateColumn()
+  deletedAt: Date;
 }
