@@ -81,6 +81,6 @@ export class AdministratorRelationalRepository
   }
 
   async remove(id: Administrator['id']): Promise<void> {
-    await this.administratorRepository.delete(id);
+    await this.administratorRepository.softDelete(id);
   }
 }

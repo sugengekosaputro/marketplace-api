@@ -1,30 +1,31 @@
-import {
-  // common
-  Injectable,
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CreateCommoditiesDto } from './dto/create-commodities.dto';
 import { UpdateCommoditiesDto } from './dto/update-commodities.dto';
 import { CommoditiesRepository } from './infrastructure/persistence/commodities.repository';
 import { IPaginationOptions } from '../utils/types/pagination-options';
 import { Commodities } from './domain/commodities';
+import { CommodityTypesService } from '../commodity-types/commodity-types.service';
+import { CommodityTypes } from '../commodity-types/domain/commodity-types';
 
 @Injectable()
 export class CommoditiesService {
   constructor(
     // Dependencies here
     private readonly commoditiesRepository: CommoditiesRepository,
+    private readonly commodityTypesService: CommodityTypesService,
   ) {}
 
-  async create(
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    createCommoditiesDto: CreateCommoditiesDto,
-  ) {
-    // Do not remove comment below.
-    // <creating-property />
-    // let type: CommodityTypes | undefined = undefined;
+  async create(createCommoditiesDto: CreateCommoditiesDto) {
+    let type: CommodityTypes | null = null;
+    if (createCommoditiesDto.typeId) {
+      type = await this.commodityTypesService.findById(
+        createCommoditiesDto.typeId,
+      );
+    }
+
     return this.commoditiesRepository.create({
-      name: '',
-      type: 'type',
+      name: createCommoditiesDto.name,
+      type: type,
     });
   }
 
@@ -51,15 +52,17 @@ export class CommoditiesService {
 
   async update(
     id: Commodities['id'],
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     updateCommoditiesDto: UpdateCommoditiesDto,
   ) {
-    // Do not remove comment below.
-    // <updating-property />
-
+    let type: CommodityTypes | null = null;
+    if (updateCommoditiesDto.typeId) {
+      type = await this.commodityTypesService.findById(
+        updateCommoditiesDto.typeId,
+      );
+    }
     return this.commoditiesRepository.update(id, {
-      // Do not remove comment below.
-      // <updating-property-payload />
+      name: updateCommoditiesDto.name,
+      type: type,
     });
   }
 

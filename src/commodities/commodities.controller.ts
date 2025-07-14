@@ -6,21 +6,18 @@ import {
   Patch,
   Param,
   Delete,
-  UseGuards,
   Query,
 } from '@nestjs/common';
 import { CommoditiesService } from './commodities.service';
 import { CreateCommoditiesDto } from './dto/create-commodities.dto';
 import { UpdateCommoditiesDto } from './dto/update-commodities.dto';
 import {
-  ApiBearerAuth,
   ApiCreatedResponse,
   ApiOkResponse,
   ApiParam,
   ApiTags,
 } from '@nestjs/swagger';
 import { Commodities } from './domain/commodities';
-import { AuthGuard } from '@nestjs/passport';
 import {
   InfinityPaginationResponse,
   InfinityPaginationResponseDto,
@@ -29,8 +26,8 @@ import { infinityPagination } from '../utils/infinity-pagination';
 import { FindAllCommoditiesDto } from './dto/find-all-commodities.dto';
 
 @ApiTags('Commodities')
-@ApiBearerAuth()
-@UseGuards(AuthGuard('jwt'))
+// @ApiBearerAuth()
+// @UseGuards(AuthGuard('jwt'))
 @Controller({
   path: 'commodities',
   version: '1',

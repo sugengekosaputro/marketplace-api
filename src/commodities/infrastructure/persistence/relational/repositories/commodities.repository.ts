@@ -17,6 +17,7 @@ export class CommoditiesRelationalRepository implements CommoditiesRepository {
 
   async create(data: Commodities): Promise<Commodities> {
     const persistenceModel = CommoditiesMapper.toPersistence(data);
+    console.log(persistenceModel);
     const newEntity = await this.commoditiesRepository.save(
       this.commoditiesRepository.create(persistenceModel),
     );
@@ -39,6 +40,7 @@ export class CommoditiesRelationalRepository implements CommoditiesRepository {
   async findById(id: Commodities['id']): Promise<NullableType<Commodities>> {
     const entity = await this.commoditiesRepository.findOne({
       where: { id },
+      relations: ['type'],
     });
 
     return entity ? CommoditiesMapper.toDomain(entity) : null;
@@ -77,6 +79,6 @@ export class CommoditiesRelationalRepository implements CommoditiesRepository {
   }
 
   async remove(id: Commodities['id']): Promise<void> {
-    await this.commoditiesRepository.delete(id);
+    await this.commoditiesRepository.softDelete(id);
   }
 }
