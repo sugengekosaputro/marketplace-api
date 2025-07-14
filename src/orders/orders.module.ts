@@ -8,6 +8,7 @@ import { RelationalOrdersPersistenceModule } from './infrastructure/persistence/
 import { CustomersModule } from '../customers/customers.module';
 import { CommoditiesModule } from 'src/commodities/commodities.module';
 import { OrderHistoriesModule } from 'src/order-histories/order-histories.module';
+import { WhatsappsModule } from '../whatsapps/whatsapps.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { OrderHistoriesModule } from 'src/order-histories/order-histories.module
     CustomersModule,
     CommoditiesModule,
     OrderHistoriesModule,
+    WhatsappsModule,
   ],
   controllers: [OrdersController],
   providers: [OrdersService],

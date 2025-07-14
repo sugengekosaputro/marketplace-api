@@ -16,6 +16,7 @@ import { OrderHistoriesService } from 'src/order-histories/order-histories.servi
 import { Customers } from 'src/customers/domain/customers';
 import { OrderHistoriesRepository } from 'src/order-histories/infrastructure/persistence/order-histories.repository';
 import { OrderHistoryStatus } from '../order-histories/infrastructure/persistence/relational/entities/order-histories.entity';
+import { WhatsappsService } from '../whatsapps/whatsapps.service';
 
 @Injectable()
 export class OrdersService {
@@ -26,6 +27,7 @@ export class OrdersService {
     private readonly commoditiesService: CommoditiesService,
     private readonly orderHistoriesService: OrderHistoriesService,
     private readonly orderHistoriesRepository: OrderHistoriesRepository,
+    private readonly whatsappService: WhatsappsService,
   ) {}
 
   async create(createOrdersDto: CreateOrdersDto): Promise<Orders> {
@@ -63,7 +65,7 @@ export class OrdersService {
       throw new NotFoundException('Commodity not found');
     }
 
-    const order = await this.ordersRepository.create({
+    const savedOrder = await this.ordersRepository.create({
       total: createOrdersDto.total,
       unit: createOrdersDto.unit,
       status: OrderStatus.PENDING_VERIFICATION,
@@ -73,12 +75,26 @@ export class OrdersService {
     });
 
     await this.orderHistoriesRepository.create({
-      order: order,
+      order: savedOrder,
       status: OrderHistoryStatus.PENDING_VERIFICATION,
       notes: 'Order created',
     });
 
-    return order;
+    this.whatsappService
+      .sendOrderConfirmation(
+        savedOrder.customer.phone,
+        savedOrder.customer.full_name,
+        savedOrder.commodities.name,
+        savedOrder.total,
+        savedOrder.unit,
+        savedOrder.id,
+      )
+      .catch((err) => {
+        // Log error jika ada, tapi jangan hentikan alur
+        console.error('Async WhatsApp notification failed', err);
+      });
+
+    return savedOrder;
   }
 
   findAllWithPagination({

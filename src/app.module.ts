@@ -44,8 +44,11 @@ import { CustomersModule } from './customers/customers.module';
 
 import { AdministratorsModule } from './administrators/administrators.module';
 
+import { WhatsappsModule } from './whatsapps/whatsapps.module';
+
 @Module({
   imports: [
+    WhatsappsModule,
     AdministratorsModule,
     CustomersModule,
     OrderHistoriesModule,
