@@ -16,6 +16,7 @@ export class OrdersMapper {
     domain.total = Number(raw.total);
     domain.unit = raw.unit;
     domain.status = raw.status;
+    domain.orderCode = raw.orderCode;
 
     if (raw.customer) {
       domain.customer = CustomersMapper.toDomain(raw.customer);
@@ -43,6 +44,7 @@ export class OrdersMapper {
     entity.total = domain.total;
     entity.unit = domain.unit;
     entity.status = domain.status;
+    entity.orderCode = domain.orderCode;
 
     if (domain.customer?.id) {
       const customerEntity = new CustomersEntity();

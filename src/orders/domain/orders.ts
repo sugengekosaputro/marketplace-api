@@ -34,4 +34,7 @@ export class Orders {
 
   @ApiProperty({ type: () => [OrderHistories], required: false })
   history?: OrderHistories[];
+
+  @ApiProperty({ type: String, example: '2021-09-01T00:00:00.000Z' })
+  orderCode: string;
 }

@@ -42,15 +42,14 @@ export class WhatsappsService {
         infer: true,
       },
     );
-    this.apiUrl = `https://graph.facebook.com/v19.0/${this.fromPhoneNumberId}/messages`;
+    this.apiUrl = `https://graph.facebook.com/v23.0/${this.fromPhoneNumberId}/messages`;
   }
 
-  async sendOrderConfirmation(
+  async sendOrderStatusUpdate(
     customerPhone: string,
     customerName: string,
     commodityName: string,
-    total: number,
-    unit: string,
+    status: string,
     orderId: string,
   ): Promise<void> {
     // Pastikan nomor telepon dalam format internasional tanpa '+' atau '0' di depan
@@ -71,22 +70,28 @@ export class WhatsappsService {
           {
             type: 'body',
             parameters: [
-              { type: 'text', text: customerName },
-              { type: 'text', text: commodityName },
-              { type: 'text', text: `${total} ${unit}` },
+              { type: 'text', text: customerName.toUpperCase() }, // Variabel {{1}}
+              { type: 'text', text: commodityName.toUpperCase() }, // Variabel {{2}}
+              { type: 'text', text: status.toUpperCase() }, // Variabel {{3}}
+              { type: 'text', text: orderId },
             ],
           },
           {
             type: 'button',
             sub_type: 'url',
-            index: 0,
-            parameters: [{ type: 'text', text: `?order-code=${orderId}` }],
+            index: '0', // Index untuk tombol pertama
+            parameters: [
+              { type: 'text', text: orderId }, // Variabel {{4}}
+            ],
           },
         ],
       },
     };
 
     try {
+      console.log(
+        `Mengirim notifikasi status untuk pesanan ${orderId} ke ${formattedPhone}`,
+      );
       await firstValueFrom(
         this.httpService.post(this.apiUrl, payload, {
           headers: {
@@ -95,10 +100,14 @@ export class WhatsappsService {
           },
         }),
       );
-    } catch (error: any) {
+      console.log(`Notifikasi untuk pesanan ${orderId} berhasil dikirim.`);
+    } catch (error) {
+      console.log(
+        `Gagal mengirim notifikasi untuk pesanan ${orderId}`,
+        error.response?.data || error.message,
+      );
       // Penting: Jangan throw error di sini agar proses utama tidak gagal
       // hanya karena notifikasi gagal terkirim.
-      console.error(error);
     }
   }
 

@@ -61,4 +61,7 @@ export class OrdersEntity extends EntityRelationalHelper {
     cascade: true,
   })
   history: OrderHistoriesEntity[];
+
+  @Column({ nullable: true })
+  orderCode: string;
 }

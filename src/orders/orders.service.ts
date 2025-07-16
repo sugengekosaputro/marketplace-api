@@ -31,7 +31,6 @@ export class OrdersService {
   ) {}
 
   async create(createOrdersDto: CreateOrdersDto): Promise<Orders> {
-    // Validate input
     if (
       !createOrdersDto.customerEmail?.trim() ||
       !createOrdersDto.customerPhone?.trim()
@@ -39,7 +38,6 @@ export class OrdersService {
       throw new BadRequestException('Email and phone are required');
     }
 
-    // let commodities: Commodities | null = null;
     let customer: Customers | null = await this.customersService.findByEmail(
       createOrdersDto.customerEmail.trim(),
     );
@@ -52,7 +50,6 @@ export class OrdersService {
       });
     }
 
-    // Assume commodityId is required, validate and fetch
     if (!createOrdersDto.commodityId) {
       throw new BadRequestException('Commodity is required');
     }
@@ -70,8 +67,8 @@ export class OrdersService {
       unit: createOrdersDto.unit,
       status: OrderStatus.PENDING_VERIFICATION,
       customer,
-      commodities, // ✅ now properly assigned
-      history: [],
+      commodities,
+      orderCode: this.generateCode(),
     });
 
     await this.orderHistoriesRepository.create({
@@ -80,19 +77,22 @@ export class OrdersService {
       notes: 'Order created',
     });
 
-    this.whatsappService
-      .sendOrderConfirmation(
-        savedOrder.customer.phone,
-        savedOrder.customer.full_name,
-        savedOrder.commodities.name,
-        savedOrder.total,
-        savedOrder.unit,
-        savedOrder.id,
-      )
-      .catch((err) => {
-        // Log error jika ada, tapi jangan hentikan alur
-        console.error('Async WhatsApp notification failed', err);
-      });
+    const currentOrder = await this.findById(savedOrder.id);
+
+    if (currentOrder) {
+      this.whatsappService
+        .sendOrderStatusUpdate(
+          currentOrder.customer.phone,
+          currentOrder.customer.full_name,
+          currentOrder.commodities.name,
+          currentOrder.status,
+          currentOrder.orderCode,
+        )
+        .catch((err) => {
+          // Log error jika ada, tapi jangan hentikan alur
+          console.error('Async WhatsApp notification failed', err);
+        });
+    }
 
     return savedOrder;
   }
@@ -148,5 +148,16 @@ export class OrdersService {
 
   remove(id: Orders['id']) {
     return this.ordersRepository.remove(id);
+  }
+
+  private generateCode() {
+    const date = new Date();
+    const year = date.getFullYear().toString().slice(-2); // '25'
+    const month = (date.getMonth() + 1).toString().padStart(2, '0'); // '07'
+    const day = date.getDate().toString().padStart(2, '0'); // '15'
+
+    const randomPart = Math.random().toString(36).substring(2, 8).toUpperCase();
+
+    return `ORD-${year}${month}${day}-${randomPart}`;
   }
 }
